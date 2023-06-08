@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import subprocess, os, random, string, sys, shutil, socket
-from itertools import cycle, izip
+from itertools import cycle, zip
 
 rDownloadURL = {"main": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/main.tar.gz", "sub": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/sub.tar.gz"}
 rPackages = ["libcurl3", "libgeoip-dev", "libxslt1-dev", "e2fsprogs", "wget", "mcrypt", "nscd", "htop", "mysql-server"]
