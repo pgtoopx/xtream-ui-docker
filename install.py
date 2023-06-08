@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import subprocess, os, random, string, sys, shutil, socket
-from itertools import cycle, zip
+import subprocess, os, random, string, sys, shutil, socket, zip
+from itertools import cycle
 
 rDownloadURL = {"main": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/main.tar.gz", "sub": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/sub.tar.gz"}
 rPackages = ["libcurl3", "libgeoip-dev", "libxslt1-dev", "e2fsprogs", "wget", "mcrypt", "nscd", "htop", "mysql-server"]
@@ -118,7 +118,7 @@ def encrypt(rHost="127.0.0.1", rUsername="user_iptvpro", rPassword="", rDatabase
     try: os.remove("/home/xtreamcodes/iptv_xtream_codes/config")
     except: pass
     rf = open('/home/xtreamcodes/iptv_xtream_codes/config', 'wb')
-    rf.write(''.join(chr(ord(c)^ord(k)) for c,k in izip('{\"host\":\"%s\",\"db_user\":\"%s\",\"db_pass\":\"%s\",\"db_name\":\"%s\",\"server_id\":\"%d\", \"db_port\":\"%d\"}' % (rHost, rUsername, rPassword, rDatabase, rServerID, rPort), cycle('5709650b0d7806074842c6de575025b1'))).encode('base64').replace('\n', ''))
+    rf.write(''.join(chr(ord(c)^ord(k)) for c,k in zip('{\"host\":\"%s\",\"db_user\":\"%s\",\"db_pass\":\"%s\",\"db_name\":\"%s\",\"server_id\":\"%d\", \"db_port\":\"%d\"}' % (rHost, rUsername, rPassword, rDatabase, rServerID, rPort), cycle('5709650b0d7806074842c6de575025b1'))).encode('base64').replace('\n', ''))
     rf.close()
 
 
