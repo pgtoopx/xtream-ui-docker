@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import subprocess, os, random, string, sys, shutil, socket, zip
+import subprocess, os, random, string, sys, shutil, socket
 from itertools import cycle
 
 rDownloadURL = {"main": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/main.tar.gz", "sub": "https://gitlab.com/tiyansoft/xpertcodes/-/raw/master/sub.tar.gz"}
