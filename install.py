@@ -30,25 +30,21 @@ def getVersion():
     try: return subprocess.check_output("lsb_release -d".split()).split(":")[-1].strip()
     except: return ""
 
-def printc(rText):
-    print(rText)
-
-
 def prepare(rType="MAIN"):
     global rPackages
     if rType != "MAIN": rPackages = rPackages[:-1]
 
-    printc("Preparing Installation")
+    print("Preparing Installation")
     for rFile in ["/var/lib/dpkg/lock-frontend", "/var/cache/apt/archives/lock", "/var/lib/dpkg/lock"]:
         try: os.remove(rFile)
         except: pass
     os.system("apt-get update > /dev/null")
-    printc("Removing libcurl4 if installed")
+    print("Removing libcurl4 if installed")
     os.system("apt-get remove --auto-remove libcurl4 -y > /dev/null")
     for rPackage in rPackages:
-        printc("Installing %s" % rPackage)
+        print("Installing %s" % rPackage)
         os.system("apt-get install %s -y > /dev/null" % rPackage)
-    printc("Installing libpng")
+    print("Installing libpng")
     os.system("wget -q -O /tmp/libpng12.deb http://mirrors.kernel.org/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb")
     os.system("dpkg -i /tmp/libpng12.deb > /dev/null")
     os.system("apt-get install -y > /dev/null") # Clean up above
@@ -58,31 +54,31 @@ def prepare(rType="MAIN"):
         subprocess.check_output("getent passwd xtreamcodes > /dev/null".split())
     except:
         # Create User
-        printc("Creating user xtreamcodes")
+        print("Creating user xtreamcodes")
         os.system("adduser --system --shell /bin/false --group --disabled-login xtreamcodes > /dev/null")
     if not os.path.exists("/home/xtreamcodes"): os.mkdir("/home/xtreamcodes")
     return True
 
 def install(rType="MAIN"):
     global rInstall, rDownloadURL
-    printc("Downloading Software")
+    print("Downloading Software")
     try: rURL = rDownloadURL[rInstall[rType]]
     except:
-        printc("Invalid download URL!", col.FAIL)
+        print("Invalid download URL!", col.FAIL)
         return False
     os.system('wget -q -O "/tmp/xtreamcodes.tar.gz" "%s"' % rURL)
     if os.path.exists("/tmp/xtreamcodes.tar.gz"):
-        printc("Installing Software")
+        print("Installing Software")
         os.system('tar -zxvf "/tmp/xtreamcodes.tar.gz" -C "/home/xtreamcodes/" > /dev/null')
 #        try: os.remove("/tmp/xtreamcodes.tar.gz")
 #        except: pass
         return True
-    printc("Failed to download installation file!", col.FAIL)
+    print("Failed to download installation file!", col.FAIL)
     return False
 
 def mysql(rUsername, rPassword):
     global rMySQLCnf
-    printc("Configuring MySQL")
+    print("Configuring MySQL")
     rCreate = True
     if os.path.exists("/etc/mysql/my.cnf"):
         if open("/etc/mysql/my.cnf", "r").read(14) == "# Xtream Codes": rCreate = False
@@ -106,11 +102,11 @@ def mysql(rUsername, rPassword):
                 os.system('mysql -u root%s -e "USE xtream_iptvpro; REPLACE INTO reg_users (id, username, password, email, member_group_id, verified, status) VALUES (1, \'admin\', \'\$6\$rounds=20000\$xtreamcodes\$XThC5OwfuS0YwS4ahiifzF14vkGbGsFF1w7ETL4sRRC5sOrAWCjWvQJDromZUQoQuwbAXAFdX3h3Cp3vqulpS0\', \'admin@website.com\', 1, 1, 1);" > /dev/null'  % rExtra)
             os.system('mysql -u root%s -e "GRANT ALL PRIVILEGES ON *.* TO \'%s\'@\'%%\' IDENTIFIED BY \'%s\' WITH GRANT OPTION; FLUSH PRIVILEGES;" > /dev/null' % (rExtra, rUsername, rPassword))
             return True
-        except: printc("Invalid password! Try again", col.FAIL)
+        except: print("Invalid password! Try again", col.FAIL)
     return False
 
 def encrypt(rHost="127.0.0.1", rUsername="user_iptvpro", rPassword="", rDatabase="xtream_iptvpro", rServerID=1, rPort=7999):
-    printc("Encrypting...")
+    print("Encrypting...")
     try: os.remove("/home/xtreamcodes/iptv_xtream_codes/config")
     except: pass
     rf = open('/home/xtreamcodes/iptv_xtream_codes/config', 'wb')
@@ -136,7 +132,7 @@ def is_docker():
     return False
 
 def configure():
-    printc("Configuring System")
+    print("Configuring System")
     if not "/home/xtreamcodes/iptv_xtream_codes/" in open("/etc/fstab").read():
         rFile = open("/etc/fstab", "a")
         rFile.write("tmpfs /home/xtreamcodes/iptv_xtream_codes/streams tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=90% 0 0\ntmpfs /home/xtreamcodes/iptv_xtream_codes/tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G 0 0")
@@ -168,7 +164,7 @@ def start(first=True):
     os.system("/home/xtreamcodes/iptv_xtream_codes/start_services.sh > /dev/null")
 
 def modifyNginx():
-    printc("Modifying Nginx")
+    print("Modifying Nginx")
     rPath = "/home/xtreamcodes/iptv_xtream_codes/nginx/conf/nginx.conf"
     rPrevData = open(rPath, "r").read()
     if not "listen 25500;" in rPrevData:
@@ -179,7 +175,6 @@ def modifyNginx():
         rFile.close()
 
 if __name__ == "__main__":
-    printc("Xtream Codes Reborn BETA - Installer", col.OKGREEN, 2)
     
     rType = "MAIN"
     rHost = "127.0.0.1"
@@ -196,7 +191,7 @@ if __name__ == "__main__":
         configure()
         modifyNginx()
         start()
-        printc("Installation completed!", col.OKGREEN, 2)
-        printc("Admin UI: http://%s:25500" % getIP())
-        printc("Please store your MySQL password!")
-        printc(rPassword)
+        print("Installation completed!")
+        print("Admin UI: http://%s:25500" % getIP())
+        print("Please store your MySQL password!")
+        print(rPassword)
